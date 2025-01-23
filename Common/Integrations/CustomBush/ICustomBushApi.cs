@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Xna.Framework.Graphics;
 using StardewValley.TerrainFeatures;
 
 namespace Pathoschild.Stardew.Common.Integrations.CustomBush;
@@ -9,21 +9,14 @@ namespace Pathoschild.Stardew.Common.Integrations.CustomBush;
 public interface ICustomBushApi
 {
     /// <summary>Try to get the custom bush model associated with the given bush.</summary>
-    /// <param name="bush">The bush.</param>
-    /// <param name="customBush">When this method returns, contains the custom bush associated with the given bush, if found; otherwise, it contains null.</param>
-    /// <returns>True if the custom bush associated with the given bush is found; otherwise, false.</returns>
-    bool TryGetCustomBush(Bush bush, out ICustomBush? customBush);
+    /// <param name="bush">The bush to check.</param>
+    /// <param name="customBush">The resulting custom bush, if applicable.</param>
+    /// <returns>Returns whether a custom bush was found.</returns>
+    bool TryGetBush(Bush bush, [NotNullWhen(true)] out ICustomBush? customBush);
 
-    /// <summary>Try to get the custom bush model and id associated with the given bush.</summary>
+    /// <summary>Try to get the currently relevant texture for the given bush.</summary>
     /// <param name="bush">The bush.</param>
-    /// <param name="customBush">When this method returns, contains the custom bush associated with the given bush, if found; otherwise, it contains null.</param>
-    /// <param name="id">The internal bush ID.</param>
-    /// <returns>True if the custom bush associated with the given bush is found; otherwise, false.</returns>
-    bool TryGetCustomBush(Bush bush, out ICustomBush? customBush, [NotNullWhen(true)] out string? id);
-
-    /// <summary>Try to get the custom bush drop associated with the given bush id.</summary>
-    /// <param name="id">The id of the bush.</param>
-    /// <param name="drops">When this method returns, contains the items produced by the custom bush.</param>
-    /// <returns>True if the drops associated with the given id is found; otherwise, false.</returns>
-    bool TryGetDrops(string id, [NotNullWhen(true)] out IList<ICustomBushDrop>? drops);
+    /// <param name="texture">The bush's texture.</param>
+    /// <returns>True if a custom bush is associated with the given bush and a texture is found.</returns>
+    bool TryGetTexture(Bush bush, [NotNullWhen(true)] out Texture2D? texture);
 }

@@ -89,7 +89,7 @@ internal class BushSubject : BaseSubject
                 string nextHarvestStr = nextHarvest == today
                     ? I18n.Generic_Now()
                     : $"{this.Stringify(nextHarvest)} ({this.GetRelativeDateStr(nextHarvest)})";
-                if (this.TryGetCustomBushDrops(bush, out IList<ItemDropData>? drops))
+                if (this.TryGetCustomBushDrops(bush, out List<ItemDropData>? drops))
                     yield return new ItemDropListField(this.GameHelper, I18n.Bush_NextHarvest(), drops, preface: nextHarvestStr);
                 else
                 {
@@ -146,14 +146,7 @@ internal class BushSubject : BaseSubject
         Vector2 offset = new Vector2(size.X - targetSize.X, size.Y - targetSize.Y) / 2;
 
         // get texture
-        Texture2D texture;
-        if (this.TryGetCustomBush(bush, out ICustomBush? customBush))
-        {
-            texture = bush.IsSheltered()
-                ? Game1.content.Load<Texture2D>(customBush.IndoorTexture)
-                : Game1.content.Load<Texture2D>(customBush.Texture);
-        }
-        else
+        if (!this.GameHelper.CustomBush.TryGetTexture(bush, out Texture2D? texture))
             texture = Bush.texture.Value;
 
         // draw portrait
@@ -194,27 +187,22 @@ internal class BushSubject : BaseSubject
     /// <returns>Returns whether a custom bush was found.</returns>
     private bool TryGetCustomBush(Bush bush, [NotNullWhen(true)] out ICustomBush? customBush)
     {
-        customBush = null;
-        return
-            this.GameHelper.CustomBush.IsLoaded
-            && this.GameHelper.CustomBush.ModApi.TryGetCustomBush(bush, out customBush);
+        return this.GameHelper.CustomBush.TryGetBush(bush, out customBush);
     }
 
     /// <summary>Get bush drops from the Custom Bush mod if applicable.</summary>
     /// <param name="bush">The bush to check.</param>
     /// <param name="drops">The items produced by the custom bush, if applicable.</param>
     /// <returns>Returns whether custom bush drops were found.</returns>
-    private bool TryGetCustomBushDrops(Bush bush, [NotNullWhen(true)] out IList<ItemDropData>? drops)
+    private bool TryGetCustomBushDrops(Bush bush, [NotNullWhen(true)] out List<ItemDropData>? drops)
     {
-        CustomBushIntegration customBush = this.GameHelper.CustomBush;
-
-        if (customBush.IsLoaded && customBush.ModApi.TryGetCustomBush(bush, out _, out string? id) && customBush.ModApi.TryGetDrops(id, out IList<ICustomBushDrop>? rawDrops))
+        if (this.GameHelper.CustomBush.TryGetBush(bush, out ICustomBush? customBush))
         {
-            drops = new List<ItemDropData>(rawDrops.Count);
-
-            foreach (ICustomBushDrop drop in rawDrops)
+            drops = new List<ItemDropData>(customBush.ItemsProduced.Count);
+            foreach (var drop in customBush.ItemsProduced)
+            {
                 drops.Add(new ItemDropData(drop.ItemId, drop.MinStack, drop.MaxStack, drop.Chance, drop.Condition));
-
+            }
             return true;
         }
 
