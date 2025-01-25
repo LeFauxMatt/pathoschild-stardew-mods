@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Xna.Framework.Graphics;
 using StardewValley.TerrainFeatures;
 
 namespace Pathoschild.Stardew.Common.Integrations.CustomBush;
@@ -8,15 +7,20 @@ namespace Pathoschild.Stardew.Common.Integrations.CustomBush;
 [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "The naming convention is defined by the Custom Bush mod.")]
 public interface ICustomBushApi
 {
-    /// <summary>Try to get the custom bush model associated with the given bush.</summary>
+    /// <summary>Determine if the bush is a custom bush.</summary>
+    /// <param name="bush">The bush to check.</param>
+    /// <returns>True if the bush is a custom bush.</returns>
+    public bool IsCustomBush(Bush bush);
+
+    /// <summary>Try to get the custom bush instance associated with the given bush.</summary>
     /// <param name="bush">The bush to check.</param>
     /// <param name="customBush">The resulting custom bush, if applicable.</param>
-    /// <returns>Returns whether a custom bush was found.</returns>
-    bool TryGetBush(Bush bush, [NotNullWhen(true)] out ICustomBush? customBush);
+    /// <returns>True if a custom bush was found.</returns>
+    public bool TryGetBush(Bush bush, [NotNullWhen(true)] out ICustomBush? customBush);
 
-    /// <summary>Try to get the currently relevant texture for the given bush.</summary>
-    /// <param name="bush">The bush.</param>
-    /// <param name="texture">The bush's texture.</param>
-    /// <returns>True if a custom bush is associated with the given bush and a texture is found.</returns>
-    bool TryGetTexture(Bush bush, [NotNullWhen(true)] out Texture2D? texture);
+    /// <summary>Try to get the custom bush model associated with the given bush.</summary>
+    /// <param name="bush">The bush to check.</param>
+    /// <param name="customBushData">The resulting custom bush, if applicable.</param>
+    /// <returns>True if a custom bush was found.</returns>
+    public bool TryGetData(Bush bush, [NotNullWhen(true)] out ICustomBushData? customBushData);
 }

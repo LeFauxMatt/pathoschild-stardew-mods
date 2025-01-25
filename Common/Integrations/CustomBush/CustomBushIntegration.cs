@@ -27,15 +27,4 @@ internal class CustomBushIntegration : BaseIntegration<ICustomBushApi>
 
         return this.IsLoaded && this.ModApi.TryGetBush(bush, out customBush);
     }
-
-    /// <summary>Try to get the currently relevant texture for the given bush.</summary>
-    /// <param name="bush">The bush.</param>
-    /// <param name="texture">The bush's texture.</param>
-    /// <returns>True if a custom bush is associated with the given bush and a texture is found.</returns>
-    public bool TryGetTexture(Bush bush, [NotNullWhen(true)] out Texture2D? texture)
-    {
-        texture = null;
-
-        return this.IsLoaded && this.ModApi.TryGetTexture(bush, out texture);
-    }
 }
