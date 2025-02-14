@@ -216,7 +216,7 @@ internal class MachineManager
     private void ReloadMachinesIn(ISet<GameLocation> locations, ISet<GameLocation> removedLocations)
     {
         List<IMachineGroup> globalAdded = [];
-        HashSet<GlobalMachineGroup> globalChanged = [];
+        HashSet<IMachineGroup> globalChanged = [];
         bool anyChanged = false;
 
         // remove old groups
@@ -255,7 +255,10 @@ internal class MachineManager
                     active.Add(group);
 
                 else
+                {
                     globalAdded.Add(group);
+                    globalChanged.Add(group);
+                }
             }
 
             // add groups
@@ -332,7 +335,7 @@ internal class MachineManager
         }
 
         // rebuild groups
-        foreach (GlobalMachineGroup globalGroup in globalChanged)
+        foreach (GlobalMachineGroup globalGroup in globalChanged.OfType<GlobalMachineGroup>())
         {
             globalGroup.Rebuild();
         }
